@@ -1,34 +1,28 @@
 #!/bin/bash
 weather=$(curl wttr.in | head -n 3 | tail -n 1 | xargs | awk '{print tolower($0)}' )
 
-if [[ $weather =~ .*snow.* ]]
+newdesktop="/Users/dan/Pictures/"
+
+if [[ $weather =~ .*snow.* ]] && [[ ! $weather =~ .*light.* ]]
 then
-
-  #snow
-  osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/Users/dan/Pictures/snow.jpg"'
-
+  newdesktop+='snow'
 else
-
-  if [[ $weather =~ .*rain.* ]]
+  if [[ $weather =~ .*rain.* ]] && [[ ! $weather =~ .*light.* ]]
   then
-
-    # rain
-    osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/Users/dan/Pictures/rain.jpg"'
-
+    newdesktop+='rain'
   else
-
     if (( $(($(date "+%H"))) > 7 && $(($(date "+%H"))) < 19 )); then
-
-      # day
-      osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/Users/dan/Pictures/day.jpg"'
-
+      newdesktop+='day'
     else
-
-      # night
-      osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/Users/dan/Pictures/night.jpg"'
-
+      newdesktop+='night'
     fi
-
   fi
-
 fi
+
+newdesktop+=".jpg"
+
+weathercmd='tell application "Finder" to set desktop picture to POSIX file "'
+weathercmd+=$newdesktop
+weathercmd+='"'
+
+osascript -e "$weathercmd"
